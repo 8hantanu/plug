@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+
+CMDR_SRC_DIR=~/proj/cmdr
+CMDR_CMDS_FILE="./commands.md"
+CMDR_EDITOR='vim'
+
+CMDR_VAR_START='<:'
+CMDR_VAR_END=':>'
+CMDR_DISP_START='<'
+CMDR_DISP_END='>'
+
+cmdr_help() {
+    echo "\
+    cmdr: the command runner
+    help: cmdr [args]
+    args:
+        -e, --edit              edit commands file
+        -g, --grep    <regex>   grep for a particular command
+        -x, --execute <regex>   execute a set of commands
+        -s, --source  <regex>   source a set of commands
+        -h, --help              display this help\
+    "
+}
+
+cmdr_raise() {
+    echo "\
+    errr: $1\
+    "
+    exit 1
+}
+
+cmdr_get_all_commands() {
+    awk '/```./{flag=1;next}/```/{flag=0}flag' $CMDR_CMDS_FILE
+}
+
+cmdr_format() {
+    cmds_disp=${1//$CMDR_VAR_START/$CMDR_DISP_START}
+    cmds_disp=${cmds_disp//$CMDR_VAR_END/$CMDR_DISP_END}
+}
+
+cmdr_display() {
+    echo "$1" | awk -F "\n" '{print "    " NR ". " $1}'
+}
+
+cmdr_grep() {
+    [ ! -n "$1" ] && cmdr_raise "no regex provided"
+    cmds=`cmdr_get_all_commands | grep $1`
+    [ "$cmds" == "" ] && cmdr_raise "no commands found"
+    cmdr_format "$cmds"
+    cmdr_display "$cmds_disp"
+}
+
+cmdr_select_commands() {
+    selected_cmds=""
+    read -p "Enter command numbers to source (separated by space): " cmd_nums
+    for cmd_num in $cmd_nums; do
+        cmd=$(echo "$1" | sed -n "${cmd_num}p")
+        cmdr_format "$cmd"
+        final_cmd=$(cmdr_final_command "$cmd")
+        echo "$final_cmd"
+    done
+}
+
+case $1 in
+    --edit | -e)
+        $CMDR_EDITOR $CMDR_CMDS_FILE
+        ;;
+    --grep | -g)
+        cmdr_grep "$2"
+        ;;
+    --source | -s)
+        ;;
+    --execute | -x)
+        ;;
+    --help | -h)
+        cmdr_help
+        ;;
+    *)
+        cmdr_raise "not an arg: $1" "\n\t help: cmdr --help"
+        ;;
+esac
