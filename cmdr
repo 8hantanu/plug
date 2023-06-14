@@ -1,8 +1,10 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-CMDR_SRC_DIR=~/proj/cmdr
-CMDR_CMDS_FILE="./commands.md"
+CMDR_CMDS_FILE="./cmds.md"
 CMDR_EDITOR='vim'
+
+CMDR_EXEC_FILE="./cmdr_exec.sh"
+CMDR_SRC_FILE="./cmdr_src.sh"
 
 CMDR_VAR_START='<:'
 CMDR_VAR_END=':>'
@@ -12,6 +14,7 @@ CMDR_DISP_END='>'
 cmdr_help() {
     echo "\
     cmdr: the command runner
+    desc: manage, search and execute your commands
     help: cmdr [args]
     args:
         -e, --edit              edit commands file
@@ -19,17 +22,15 @@ cmdr_help() {
         -x, --execute <regex>   execute a set of commands
         -s, --source  <regex>   source a set of commands
         -h, --help              display this help\
-    "
+    " | sed 's/^    //'
 }
 
-cmdr_raise() {
-    echo "\
-    errr: $1\
-    "
+cmdr_err() {
+    echo "err: $1"
     exit 1
 }
 
-cmdr_get_all_commands() {
+cmdr_all_cmds() {
     awk '/```./{flag=1;next}/```/{flag=0}flag' $CMDR_CMDS_FILE
 }
 
@@ -39,27 +40,55 @@ cmdr_format() {
 }
 
 cmdr_display() {
-    echo "$1" | awk -F "\n" '{print "    " NR ". " $1}'
+    echo "$1" | awk -F "\n" '{print NR ". " $1}'
 }
 
 cmdr_grep() {
-    [ ! -n "$1" ] && cmdr_raise "no regex provided"
-    cmds=`cmdr_get_all_commands | grep $1`
-    [ "$cmds" == "" ] && cmdr_raise "no commands found"
+    [ ! -n "$1" ] && cmdr_err "no regex provided"
+    cmds=`cmdr_all_cmds | grep $1`
+    [ "$cmds" == "" ] && cmdr_err "no commands found"
     cmdr_format "$cmds"
     cmdr_display "$cmds_disp"
 }
 
-cmdr_select_commands() {
+cmdr_exec() {
+    cmdr_grep "$1"
+    selected_cmds=$(cmdr_select_cmds "$cmds")
+    echo "$selected_cmds" > $CMDR_EXEC_FILE
+    chmod +x $CMDR_EXEC_FILE
+    $CMDR_EXEC_FILE
+    rm $CMDR_EXEC_FILE
+}
+
+cmdr_final_cmd() {
+    entry=$1
+    cmd=$1
+    while [[ $entry =~ $CMDR_VAR_START ]]; do
+        entry=${entry#*$CMDR_VAR_START}
+        key=${entry%%$CMDR_VAR_END*}
+
+        read -p "$key: " val
+        [ ! -n "$val" ] && echo "err: no value provided" && exit 1
+
+        cmd=${cmd/$key/$val}
+        cmd=${cmd/$CMDR_VAR_START/}
+        cmd=${cmd/$CMDR_VAR_END/}
+    done
+    echo "$cmd"
+}
+
+cmdr_select_cmds() {
     selected_cmds=""
-    read -p "Enter command numbers to source (separated by space): " cmd_nums
+    read -p "Enter command numbers (separate by space): " cmd_nums
     for cmd_num in $cmd_nums; do
         cmd=$(echo "$1" | sed -n "${cmd_num}p")
         cmdr_format "$cmd"
-        final_cmd=$(cmdr_final_command "$cmd")
+        final_cmd=$(cmdr_final_cmd "$cmd")
         echo "$final_cmd"
     done
 }
+
+[ ! -n "$1" ] && cmdr_help && exit 0
 
 case $1 in
     --edit | -e)
@@ -71,11 +100,12 @@ case $1 in
     --source | -s)
         ;;
     --execute | -x)
+        cmdr_exec "$2"
         ;;
     --help | -h)
         cmdr_help
         ;;
     *)
-        cmdr_raise "not an arg: $1" "\n\t help: cmdr --help"
+        cmdr_err "not an arg: $1"
         ;;
 esac
