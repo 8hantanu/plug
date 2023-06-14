@@ -1,15 +1,20 @@
 #!/bin/bash
 
-CMDR_CMDS_PATH="./cmds"
-CMDR_EDITOR='vim'
+cmdr_cfg() {
+    # CMDR_CMDS_PATH=<your_commands_path>
+    # or delete the above line and set CMDR_CMDS_PATH in your shell
+    [ ! -n "$CMDR_CMDS_PATH" ] && cmdr_err "CMDR_CMDS_PATH not set" && exit 1
 
-CMDR_EXEC_FILE="./cmdr_exec.sh"
-CMDR_SRC_FILE="./cmdr_src.sh"
+    CMDR_EDITOR='vim'
 
-CMDR_VAR_START='<:'
-CMDR_VAR_END=':>'
-CMDR_DISP_START='<'
-CMDR_DISP_END='>'
+    CMDR_EXEC_FILE="/tmp/cmdr_exec.sh"
+    CMDR_SRC_FILE="/tmp/cmdr_src.sh"
+
+    CMDR_VAR_START='<:'
+    CMDR_VAR_END=':>'
+    CMDR_DISP_START='<'
+    CMDR_DISP_END='>'
+}
 
 cmdr_help() {
     echo "\
@@ -65,6 +70,12 @@ cmdr_exec() {
     rm $CMDR_EXEC_FILE
 }
 
+cmdr_src() {
+    cmdr_grep "$1"
+    selected_cmds=$(cmdr_select_cmds "$cmds")
+    echo "$selected_cmds" > $CMDR_SRC_FILE
+}
+
 cmdr_final_cmd() {
     entry=$1
     cmd=$1
@@ -95,7 +106,7 @@ cmdr_select_cmds() {
 }
 
 [ ! -n "$1" ] && cmdr_help && exit 0
-
+cmdr_cfg
 case $1 in
     --edit | -e)
         $CMDR_EDITOR $CMDR_CMDS_PATH
@@ -104,6 +115,7 @@ case $1 in
         cmdr_grep "$2"
         ;;
     --source | -s)
+        cmdr_src "$2"
         ;;
     --execute | -x)
         cmdr_exec "$2"
