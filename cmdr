@@ -88,9 +88,7 @@ cmdr_final_cmd() {
         read -p "$key: " val
         [ ! -n "$val" ] && echo "err: no value provided" && exit 1
 
-        cmd=${cmd/$key/$val}
-        cmd=${cmd/$CMDR_VAR_START/}
-        cmd=${cmd/$CMDR_VAR_END/}
+        cmd=${cmd/$CMDR_VAR_START$key$CMDR_VAR_END/$val}
     done
     echo "$cmd"
 }
