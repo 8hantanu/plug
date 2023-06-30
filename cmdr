@@ -7,8 +7,9 @@ cmdr_cfg() {
 
     CMDR_EDITOR='vim'
 
-    CMDR_EXEC_FILE="/tmp/cmdr_exec.sh"
-    CMDR_SRC_FILE="/tmp/cmdr_src.sh"
+    CMDR_EXEC_FILE="/tmp/exec.cmds"
+
+    [ ! -n "$CMDR_TEMP_CMDS" ] && CMDR_TEMP_CMDS="/tmp/cmds.tmp"
 
     CMDR_VAR_START='<:'
     CMDR_VAR_END=':>'
@@ -25,7 +26,7 @@ cmdr_help() {
         -e, --edit              edit commands file
         -g, --grep    <regex>   grep for a particular command
         -x, --execute <regex>   execute a set of commands
-        -s, --source  <regex>   source a set of commands
+        -a, --add     <regex>   add a set of commands to a file
         -h, --help              display this help\
     " | sed 's/^    //'
 }
@@ -70,10 +71,11 @@ cmdr_exec() {
     rm $CMDR_EXEC_FILE
 }
 
-cmdr_src() {
+cmdr_add() {
     cmdr_grep "$1"
     selected_cmds=$(cmdr_select_cmds "$cmds")
-    echo "$selected_cmds" > $CMDR_SRC_FILE
+    [ ! -n "$CMDR_TEMP_CMDS" ] && cmdr_err "CMDR_TEMP_CMDS not set" && exit 1
+    echo "$selected_cmds" > $CMDR_TEMP_CMDS
 }
 
 cmdr_final_cmd() {
@@ -100,9 +102,10 @@ cmdr_select_cmds() {
         cmd=$(echo "$1" | sed -n "${cmd_num}p")
         cmdr_format "$cmd"
         final_cmd=$(cmdr_final_cmd "$cmd")
-        echo "echo \"--- $cmd_num\""
+        echo "echo \"$cmd_num ...\""
         echo "$final_cmd"
     done
+    echo "echo \"done.\""
 }
 
 [ ! -n "$1" ] && cmdr_help && exit 0
@@ -114,8 +117,8 @@ case $1 in
     --grep | -g)
         cmdr_grep "$2"
         ;;
-    --source | -s)
-        cmdr_src "$2"
+    --add | -a)
+        cmdr_add "$2"
         ;;
     --execute | -x)
         cmdr_exec "$2"
