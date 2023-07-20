@@ -5,6 +5,10 @@ cmdr_cfg() {
     # or delete the above line and set CMDR_CMDS_PATH in your shell
     [ ! -n "$CMDR_CMDS_PATH" ] && cmdr_err "CMDR_CMDS_PATH not set" && exit 1
 
+    # CMDR_EXEC_SHELL=<prefered shell> # ex: "/bin/csh"
+    # or delete the above line and set CMDR_EXEC_SHELL in your shell
+    [ ! -n "$CMDR_EXEC_SHELL" ] && cmdr_err "CMDR_EXEC_SHELL not set" && exit 1
+
     CMDR_EDITOR='vim'
 
     CMDR_EXEC_FILE="/tmp/exec.cmds"
@@ -37,7 +41,7 @@ cmdr_err() {
 }
 
 cmdr_all_cmds() {
-    # add check if $CMDR_CMDS_PATH is a directory then awk in all the files in directory
+    # add check if $CMDR_CMDS_PATH is a directory then awk in all the files in the directory
     if [ -d $CMDR_CMDS_PATH ]; then
     awk '/```./{flag=1;next}/```/{flag=0}flag' $CMDR_CMDS_PATH/*
     else
@@ -65,7 +69,8 @@ cmdr_grep() {
 cmdr_exec() {
     cmdr_grep "$1"
     selected_cmds=$(cmdr_select_cmds "$cmds")
-    echo "$selected_cmds" > $CMDR_EXEC_FILE
+    echo "#! $CMDR_EXEC_SHELL" > $CMDR_EXEC_FILE
+    echo "$selected_cmds" >> $CMDR_EXEC_FILE
     chmod +x $CMDR_EXEC_FILE
     $CMDR_EXEC_FILE
     rm $CMDR_EXEC_FILE
