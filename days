@@ -1,0 +1,15 @@
+#!/bin/bash
+
+START_DATE="1997-08-31"
+DAYS_DIR="."
+
+days_since=$((($(date +%s)-$(date -jf "%Y-%m-%d" $START_DATE +%s))/86400))
+
+day_file=$(printf "%05d" $days_since).md
+
+if [ ! -f $DAYS_DIR/$day_file ]; then
+    echo "# $(date +%Y-%m-%d)" > $DAYS_DIR/$day_file
+fi
+
+$EDITOR $DAYS_DIR/$day_file
+
