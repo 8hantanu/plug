@@ -1,0 +1,22 @@
+#!/bin/bash
+
+err() {
+    echo "err: $1"
+    exit 1
+}
+
+set_cfg() {
+    if [ -z "${!1}" ]; then
+        eval "$1=$2"
+    fi
+    if [ -z "${!1}" ]; then
+        err "$1 is not set in the cfgs file" 
+    fi
+}
+
+check_dir() {
+    if [ ! -d "$1" ]; then
+        err "$1 does not exist"
+    fi
+}
+
