@@ -20,3 +20,12 @@ check_dir() {
     fi
 }
 
+edit() {
+    $EDITOR $1
+}
+
+init() {
+    [ ! -n "$1" ] && help_msg && exit 0
+    prereqs
+    options $@
+}

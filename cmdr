@@ -1,19 +1,8 @@
 #!/bin/bash
 
+source $PLUG_PATH/cfgs
+
 cmdr_cfg() {
-    # CMDR_CMDS_PATH=<your_commands_path>
-    # or delete the above line and set CMDR_CMDS_PATH in your shell
-    [ ! -n "$CMDR_CMDS_PATH" ] && cmdr_err "CMDR_CMDS_PATH not set" && exit 1
-
-    # CMDR_EXEC_SHELL=<prefered shell> # ex: "/bin/csh"
-    # or delete the above line and set CMDR_EXEC_SHELL in your shell
-    [ ! -n "$CMDR_EXEC_SHELL" ] && cmdr_err "CMDR_EXEC_SHELL not set" && exit 1
-
-    CMDR_EDITOR='vim'
-
-    CMDR_EXEC_FILE="/tmp/exec.cmds"
-
-    [ ! -n "$CMDR_TEMP_CMDS" ] && CMDR_TEMP_CMDS="/tmp/cmds.tmp"
 
     CMDR_VAR_START='<:'
     CMDR_VAR_END=':>'
@@ -115,7 +104,7 @@ cmdr_select_cmds() {
 cmdr_cfg
 case $1 in
     --edit | -e)
-        $CMDR_EDITOR $CMDR_CMDS_PATH
+        $EDITOR $CMDR_CMDS_PATH
         ;;
     --grep | -g)
         cmdr_grep "$2"
