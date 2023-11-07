@@ -2,31 +2,25 @@
 
 source $PLUG_PATH/cfgs
 
-cmdr_cfg() {
-
-    CMDR_VAR_START='<:'
-    CMDR_VAR_END=':>'
-    CMDR_DISP_START='<'
-    CMDR_DISP_END='>'
-}
-
-cmdr_help() {
+help_msg() {
     echo "\
     cmdr: the command runner
     desc: manage, search and execute your commands
     help: cmdr [args]
     args:
-        -e, --edit              edit commands file
-        -g, --grep    <regex>   grep for a particular command
-        -x, --execute <regex>   execute a set of commands
-        -a, --add     <regex>   add a set of commands to a file
-        -h, --help              display this help\
+        -e, --edit                  edit commands file
+        -g, --grep    <regex>       grep for a particular command
+        -x, --execute <regex>       execute a set of commands
+        -a, --add     <regex>       add a set of commands to a file
+        -h, --help                  display this help\
     " | sed 's/^    //'
 }
 
-cmdr_err() {
-    echo "err: $1"
-    exit 1
+cmdr_cfg() {
+    cmdr_var_start='<:'
+    cmdr_var_end=':>'
+    cmdr_disp_start='<'
+    cmdr_disp_end='>'
 }
 
 cmdr_all_cmds() {
@@ -39,8 +33,8 @@ cmdr_all_cmds() {
 }
 
 cmdr_format() {
-    cmds_disp=${1//$CMDR_VAR_START/$CMDR_DISP_START}
-    cmds_disp=${cmds_disp//$CMDR_VAR_END/$CMDR_DISP_END}
+    cmds_disp=${1//$cmdr_var_start/$cmdr_disp_start}
+    cmds_disp=${cmds_disp//$cmdr_var_end/$cmdr_disp_end}
 }
 
 cmdr_display() {
@@ -48,9 +42,9 @@ cmdr_display() {
 }
 
 cmdr_grep() {
-    [ ! -n "$1" ] && cmdr_err "no regex provided"
+    [ ! -n "$1" ] && err "no regex provided"
     cmds=`cmdr_all_cmds | grep $1`
-    [ "$cmds" == "" ] && cmdr_err "no commands found"
+    [ "$cmds" == "" ] && err "no commands found"
     cmdr_format "$cmds"
     cmdr_display "$cmds_disp"
 }
@@ -68,21 +62,21 @@ cmdr_exec() {
 cmdr_add() {
     cmdr_grep "$1"
     selected_cmds=$(cmdr_select_cmds "$cmds")
-    [ ! -n "$CMDR_TEMP_CMDS" ] && cmdr_err "CMDR_TEMP_CMDS not set" && exit 1
+    [ ! -n "$CMDR_TEMP_CMDS" ] && err "CMDR_TEMP_CMDS not set" && exit 1
     echo "$selected_cmds" > $CMDR_TEMP_CMDS
 }
 
 cmdr_final_cmd() {
     entry=$1
     cmd=$1
-    while [[ $entry =~ $CMDR_VAR_START ]]; do
-        entry=${entry#*$CMDR_VAR_START}
-        key=${entry%%$CMDR_VAR_END*}
+    while [[ $entry =~ $cmdr_var_start ]]; do
+        entry=${entry#*$cmdr_var_start}
+        key=${entry%%$cmdr_var_end*}
 
         read -p "$key: " val
         [ ! -n "$val" ] && echo "err: no value provided" && exit 1
 
-        cmd=${cmd/$CMDR_VAR_START$key$CMDR_VAR_END/$val}
+        cmd=${cmd/$cmdr_var_start$key$cmdr_var_end/$val}
     done
     echo "$cmd"
 }
@@ -100,25 +94,19 @@ cmdr_select_cmds() {
     echo "echo \"done.\""
 }
 
-[ ! -n "$1" ] && cmdr_help && exit 0
-cmdr_cfg
-case $1 in
-    --edit | -e)
-        $EDITOR $CMDR_CMDS_PATH
-        ;;
-    --grep | -g)
-        cmdr_grep "$2"
-        ;;
-    --add | -a)
-        cmdr_add "$2"
-        ;;
-    --execute | -x)
-        cmdr_exec "$2"
-        ;;
-    --help | -h)
-        cmdr_help
-        ;;
-    *)
-        cmdr_err "not an arg: $1"
-        ;;
-esac
+prereqs() {
+    cmdr_cfg
+    check_dir $CMDR_CMDS_PATH
+}
+
+options() {
+    case $1 in
+        -e | --edit    ) edit $CMDR_CMDS_PATH;;
+        -g | --grep    ) cmdr_grep "$2";;
+        -a | --add     ) cmdr_add "$2";;
+        -x | --execute ) cmdr_exec "$2";;
+           *           ) help_msg;;
+    esac
+}
+
+init $@
