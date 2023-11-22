@@ -1,0 +1,50 @@
+#!/bin/bash
+
+source $PLUG_PATH/cfgs
+
+help_msg() {
+    echo "\
+    hold: the task sequencer
+    desc: hold your tasks together
+    help: hold [args]
+    args:
+        -o, --on                   notify the event
+        -f, --off                  hold off a task till the event
+        -h, --help                 display this help\
+    " | sed 's/^    //'
+}
+
+prereqs() {
+    check_dir $HOLD_DIR
+    hold_event="$HOLD_DIR/delete_me"
+}
+
+on() {
+    if [ -n "$1" ]; then
+        hold_event="$HOLD_DIR/$1_delete_me"
+    fi
+    touch $hold_event
+}
+
+off() {
+    if [ -n "$1" ]; then
+        hold_event="$HOLD_DIR/$1_delete_me"
+    fi
+    while true; do
+        if [ -f "$hold_event" ]; then
+            break
+        fi
+        sleep $HOLD_TIME
+    done
+    rm $hold_event
+}
+
+options() {
+    case $1 in
+        -o | --on  ) on $2;;
+        -f | --off ) off $2;;
+           *       ) help_msg;;
+    esac
+}
+
+init $@

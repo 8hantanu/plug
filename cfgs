@@ -15,3 +15,6 @@ set_cfg CMDR_TEMP_CMDS      "/tmp/cmds.tmp"
 set_cfg DAYS_DIR            "$PROJ/days"
 set_cfg DAYS_START_DATE     "1997-08-31"
 
+# hold
+set_cfg HOLD_DIR            "/tmp"
+set_cfg HOLD_TIME           "1"
