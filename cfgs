@@ -5,6 +5,9 @@ source $PLUG_PATH/util
 # global
 set_cfg EDITOR              "nvim"
 
+# proj
+set_cfg INIT_PROJ_DIR       "$PROJ"
+
 # cmdr
 set_cfg CMDR_CMDS_PATH      "$PROJ/cmds"
 set_cfg CMDR_EXEC_FILE      "/tmp/exec.cmds"
@@ -15,6 +18,3 @@ set_cfg CMDR_TEMP_CMDS      "/tmp/cmds.tmp"
 set_cfg DAYS_DIR            "$PROJ/days"
 set_cfg DAYS_START_DATE     "1997-08-31"
 
-# hold
-set_cfg HOLD_DIR            "/tmp"
-set_cfg HOLD_TIME           "1"

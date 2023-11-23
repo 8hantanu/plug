@@ -1,0 +1,54 @@
+#!/bin/bash
+
+source $PLUG_PATH/util
+
+# knot
+set_cfg KNOT_DIR    "/tmp"
+set_cfg KNOT_TIME   "1"
+
+help_msg() {
+    echo "\
+    knot: the task notifier
+    desc: tie your tasks together
+    help: knot [args]
+    args:
+        -c, --create <event>        finish task and create the event
+        -t, --till   <event>        start task until event received
+        -h, --help                  display this help\
+    " | sed 's/^    //'
+}
+
+prereqs() {
+    check_dir $KNOT_DIR
+    knot_event="$KNOT_DIR/delete_me"
+}
+
+create() {
+    if [ -n "$1" ]; then
+        knot_event="$KNOT_DIR/$1_delete_me"
+    fi
+    touch $knot_event
+}
+
+till() {
+    if [ -n "$1" ]; then
+        knot_event="$KNOT_DIR/$1_delete_me"
+    fi
+    while true; do
+        if [ -f "$knot_event" ]; then
+            break
+        fi
+        sleep $KNOT_TIME
+    done
+    rm $knot_event
+}
+
+options() {
+    case $1 in
+        -c | --create ) create $2;;
+        -t | --till   ) till $2;;
+           *          ) help_msg;;
+    esac
+}
+
+init $@
