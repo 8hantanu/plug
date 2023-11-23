@@ -1,0 +1,36 @@
+#!/bin/bash
+
+source $PLUG_PATH/cfgs
+
+help_msg() {
+    log "
+    hexd: hex -- dec
+    desc: convert hex to dec and vice-versa
+    help: hexd [number]
+    args:
+        0x<value>               0x prefix converted to decimal
+        <value>                 no prefix converted to hexadecimal
+    "
+}
+
+prereqs() {
+    :
+}
+
+hex2dec() {
+    echo $(( $1 ))
+}
+
+dec2hex() {
+    echo "0x"$(printf "%x" $1)
+}
+
+options() {
+    case $1 in
+           0x* ) hex2dec $1;;
+        [0-9]* ) dec2hex $1;;
+             * ) help_msg;;
+    esac
+}
+
+init $@
