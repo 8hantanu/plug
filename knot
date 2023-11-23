@@ -5,12 +5,30 @@ source $PLUG_PATH/cfgs
 help_msg() {
     echo "\
     knot: the task notifier
-    desc: tie your tasks together
+    desc: notify next task initialization when previous task is finished
     help: knot [args]
     args:
         -c, --create <knot>         finish task and create the knot
         -t, --till   <knot>         standby task until knot created
+        -u, --usage                 show examples of usage
         -h, --help                  display this help\
+    "
+}
+
+examples() {
+    echo "\
+    example 1:
+        Use knots to schedule task1 and task2,
+        where task2 is dependent on task1.
+        Start task1 and create a knot:
+        $ task1 && knot -c
+        Wait till knot is created and start task2:
+        $ knot -t && task2
+    example 2:
+        Use knot names to schedule multiple tasks:
+        $ task1 && knot -c k1
+        $ knot -t k1 && task2 && knot -c k2
+        $ knot -t k2 && task3\
     " | sed 's/^    //'
 }
 
@@ -43,6 +61,7 @@ options() {
     case $1 in
         -c | --create ) create $2;;
         -t | --till   ) till $2;;
+        -u | --usage  ) examples;;
            *          ) help_msg;;
     esac
 }
