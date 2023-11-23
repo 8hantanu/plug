@@ -18,3 +18,6 @@ set_cfg CMDR_TEMP_CMDS      "/tmp/cmds.tmp"
 set_cfg DAYS_DIR            "$PROJ/days"
 set_cfg DAYS_START_DATE     "1997-08-31"
 
+# knot
+set_cfg KNOT_DIR            "/tmp"
+set_cfg KNOT_TIME           "1"

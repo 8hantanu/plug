@@ -1,10 +1,6 @@
 #!/bin/bash
 
-source $PLUG_PATH/util
-
-# knot
-set_cfg KNOT_DIR    "/tmp"
-set_cfg KNOT_TIME   "1"
+source $PLUG_PATH/cfgs
 
 help_msg() {
     echo "\
@@ -12,8 +8,8 @@ help_msg() {
     desc: tie your tasks together
     help: knot [args]
     args:
-        -c, --create <event>        finish task and create the event
-        -t, --till   <event>        start task until event received
+        -c, --create <knot>         finish task and create the knot
+        -t, --till   <knot>         standby task until knot created
         -h, --help                  display this help\
     " | sed 's/^    //'
 }
