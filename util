@@ -28,4 +28,9 @@ init() {
     [ ! -n "$1" ] && help_msg && exit 0
     prereqs
     options $@
+    exit 0
+}
+
+log() {
+    echo "$@" | sed 's/^    //' | sed '/^$/d'
 }

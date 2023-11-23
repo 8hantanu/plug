@@ -3,7 +3,7 @@
 source $PLUG_PATH/cfgs
 
 help_msg() {
-    echo "\
+    log "
     cmdr: the command runner
     desc: manage, search and execute your commands
     help: cmdr [args]
@@ -13,7 +13,7 @@ help_msg() {
         -x, --execute <regex>       execute a set of commands
         -a, --add     <regex>       add a set of commands to a file
         -h, --help                  display this help\
-    " | sed 's/^    //'
+    "
 }
 
 cmdr_cfg() {

@@ -3,7 +3,7 @@
 source $PLUG_PATH/cfgs
 
 help_msg() {
-    echo "\
+    log "
     knot: the task notifier
     desc: notify next task initialization when previous task is finished
     help: knot [args]
@@ -11,12 +11,12 @@ help_msg() {
         -c, --create <knot>         finish task and create the knot
         -t, --till   <knot>         standby task until knot created
         -u, --usage                 show examples of usage
-        -h, --help                  display this help\
+        -h, --help                  display this help
     "
 }
 
 examples() {
-    echo "\
+    log "
     example 1:
         Use knots to schedule task1 and task2,
         where task2 is dependent on task1.
@@ -28,8 +28,8 @@ examples() {
         Use knot names to schedule multiple tasks:
         $ task1 && knot -c k1
         $ knot -t k1 && task2 && knot -c k2
-        $ knot -t k2 && task3\
-    " | sed 's/^    //'
+        $ knot -t k2 && task3
+    "
 }
 
 prereqs() {
