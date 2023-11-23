@@ -3,20 +3,20 @@
 source $PLUG_PATH/util
 
 # global
-set_cfg EDITOR              "nvim"
+set_cfg EDITOR "nvim"
 
 # proj
-set_cfg INIT_PROJ_DIR       "$PROJ"
+set_cfg INIT_PROJ_DIR "$PROJ"
 
 # cmdr
-set_cfg CMDR_CMDS_PATH      "$PROJ/cmds"
-set_cfg CMDR_EXEC_FILE      "/tmp/exec.cmds"
-set_cfg CMDR_EXEC_SHELL     "/bin/bash"
-set_cfg CMDR_TEMP_CMDS      "/tmp/cmds.tmp"
+set_cfg CMDR_CMDS_PATH "$PROJ/cmds"
+set_cfg CMDR_EXEC_FILE "/tmp/exec.cmds"
+set_cfg CMDR_EXEC_SHELL "/bin/bash"
+set_cfg CMDR_TEMP_CMDS "/tmp/cmds.tmp"
 
 # days
-set_cfg DAYS_DIR            "$PROJ/days"
-set_cfg DAYS_START_DATE     "1997-08-31"
+set_cfg DAYS_DIR "$PROJ/days"
+set_cfg DAYS_START_DATE "1997-08-31"
 
 # knot
 # directory to store knots
