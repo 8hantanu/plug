@@ -8,8 +8,8 @@ help_msg() {
     desc: convert hex-to-dec or dec-to-hex
     help: hexd [number]
     args:
-        0x<value>               0x prefix converted to decimal
-        <value>                 no prefix converted to hexadecimal
+        0x<value>                   0x prefix converted to decimal
+        <value>                     no prefix converted to hexadecimal
     "
 }
 
