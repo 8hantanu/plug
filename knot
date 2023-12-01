@@ -4,12 +4,12 @@ source $PLUG_PATH/cfgs
 
 help_msg() {
     log "
-    knot: the task notifier
+    knot: the tas(k-not)ifier
     desc: notify next task initialization when previous task is finished
     help: knot [args]
     args:
-        -c, --create <knot>         finish task and create the knot
-        -t, --till   <knot>         standby task until knot created
+        -c, --create <knot>         finish task and create knot
+        -b, --break  <knot>         break the knot after knot creation
         -u, --usage                 show examples of usage
         -h, --help                  display this help
     "
@@ -22,31 +22,35 @@ examples() {
         where task2 is dependent on task1.
         Start task1 and create a knot:
         $ task1 && knot -c
-        Wait till knot is created and start task2:
-        $ knot -t && task2
+        Start task2 after knot is created:
+        $ knot -b && task2
     example 2:
         Use knot names to schedule multiple tasks:
         $ task1 && knot -c k1
-        $ knot -t k1 && task2 && knot -c k2
-        $ knot -t k2 && task3
+        $ knot -b k1 && task2 && knot -c k2
+        $ knot -b k2 && task3
+    example 3:
+        Break the knot if not used:
+        $ some_task && knot -c k1
+        $ knot -b k1
     "
 }
 
 prereqs() {
     check_dir $KNOT_DIR
-    knot_event="$KNOT_DIR/delete_me"
+    knot_event="$KNOT_DIR/.knot"
 }
 
 create() {
     if [ -n "$1" ]; then
-        knot_event="$KNOT_DIR/$1_delete_me"
+        knot_event="$KNOT_DIR/$1.knot"
     fi
     touch $knot_event
 }
 
 till() {
     if [ -n "$1" ]; then
-        knot_event="$KNOT_DIR/$1_delete_me"
+        knot_event="$KNOT_DIR/$1.knot"
     fi
     while true; do
         if [ -f "$knot_event" ]; then
@@ -60,7 +64,7 @@ till() {
 options() {
     case $1 in
         -c | --create ) create $2;;
-        -t | --till   ) till $2;;
+        -b | --break  ) till $2;;
         -u | --usage  ) examples;;
            *          ) help_msg;;
     esac
