@@ -10,6 +10,7 @@ help_msg() {
     args:
         -c, --create <knot>         finish task and create knot
         -b, --break  <knot>         break the knot after knot creation
+        -d, --delete                delete all knots
         -u, --usage                 show examples of usage
         -h, --help                  display this help
     "
@@ -61,10 +62,15 @@ till() {
     rm $knot_event
 }
 
+delete() {
+    rm -rf $KNOT_DIR/*.knot
+}
+
 options() {
     case $1 in
         -c | --create ) create $2;;
         -b | --break  ) till $2;;
+        -d | --delete ) delete;;
         -u | --usage  ) examples;;
            *          ) help_msg;;
     esac
