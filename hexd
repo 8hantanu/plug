@@ -18,10 +18,12 @@ prereqs() {
 }
 
 hex2dec() {
+    [[ ! $1 =~ ^0x[0-9a-fA-F]+$ ]] && err "invalid hexadecimal"
     echo $(( $1 ))
 }
 
 dec2hex() {
+    [[ ! "$1" =~ ^[0-9]+$ ]] && err "invalid decimal"
     echo "0x"$(printf "%x" $1)
 }
 
