@@ -8,8 +8,8 @@ help_msg() {
     desc: notify next task initialization when previous task is finished
     help: knot [args]
     args:
-        -c, --create <knot>         finish task and create knot
-        -b, --break  <knot>         break the knot after knot creation
+        -c, --create <knots>        finish task and create knots
+        -b, --break  <knots>        break the knots after knots creation
         -d, --delete                delete all knots
         -u, --usage                 show examples of usage
         -h, --help                  display this help
@@ -22,54 +22,65 @@ examples() {
         Use knots to schedule task1 and task2,
         where task2 is dependent on task1.
         Start task1 and create a knot:
-        $ task1 && knot -c
+        $ task1 && knot -c <knot_name>
         Start task2 after knot is created:
-        $ knot -b && task2
+        $ knot -b <knot_name> && task2
     example 2:
-        Use knot names to schedule multiple tasks:
-        $ task1 && knot -c k1
-        $ knot -b k1 && task2 && knot -c k2
+        Use knots to initiate multiple tasks:
+        $ task1 && knot -c k1 k2
+        $ knot -b k1 && task2
         $ knot -b k2 && task3
-    example 3:
-        Break the knot if not used:
-        $ some_task && knot -c k1
-        $ knot -b k1
+    example 2:
+        Use knots to wait for multiple tasks:
+        $ task1 && knot -c k1
+        $ task2 && knot -c k2
+        $ knot -b k1 k2 && task2
     "
 }
 
 prereqs() {
     check_dir $KNOT_DIR
-    knot_event="$KNOT_DIR/.knot"
+    knot_name="$KNOT_DIR/.knot"
 }
 
 create() {
-    if [ -n "$1" ]; then
-        knot_event="$KNOT_DIR/$1.knot"
-    fi
-    touch $knot_event
+    shift;
+    [ "$#" -eq 0 ] && err "no knot given"
+    for knot in "$@"; do
+        knot_name="$KNOT_DIR/$knot.knot"
+        touch $knot_name
+    done
 }
 
 till() {
-    if [ -n "$1" ]; then
-        knot_event="$KNOT_DIR/$1.knot"
-    fi
+    shift;
+    [ "$#" -eq 0 ] && err "no knot given"
     while true; do
-        if [ -f "$knot_event" ]; then
-            break
-        fi
+        created=true
+        for knot in "$@"; do
+            knot_name="$KNOT_DIR/$knot.knot"
+            [ ! -e $knot_name ] && created=false && break
+        done
+        [ $created = true ] && break
+        echo "still waiting"
         sleep $KNOT_TIME
     done
-    rm $knot_event
+    delete $@
 }
 
 delete() {
-    rm -rf $KNOT_DIR/*.knot
+    shift;
+    [ "$#" -eq 0 ] && rm -rf $KNOT_DIR/*.knot
+    for knot in "$@"; do
+        knot_name="$KNOT_DIR/$knot.knot"
+        rm -rf $knot_name
+    done
 }
 
 options() {
     case $1 in
-        -c | --create ) create $2;;
-        -b | --break  ) till $2;;
+        -c | --create ) create $@;;
+        -b | --break  ) till $@;;
         -d | --delete ) delete;;
         -u | --usage  ) examples;;
            *          ) help_msg;;
