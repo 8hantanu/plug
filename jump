@@ -1,0 +1,28 @@
+#!/bin/bash
+
+while getopts "s:w:" opt; do
+    case $opt in
+        s) target_session=$OPTARG ;;
+        w) target_window=$OPTARG ;;
+        \?) echo "Invalid option: -$OPTARG" >&2
+            exit 1 ;;
+    esac
+done
+
+if [ -z "$target_session" ] || [ -z "$target_window" ]; then
+    echo "Usage: $0 -s <session> -w <window>"
+    exit 1
+fi
+
+current_session=$(tmux display-message -p '#S')
+current_window=$(tmux display-message -p '#I')
+
+# if [ "$current_session" != "$target_session" ]; then
+#     tmux switch-client -t "$target_session"
+# fi
+#
+# if [ "$current_window" -ne "$target_window" ]; then
+#     tmux select-window -t "$target_window"
+# fi
+
+tmux switch-client -t "$target_session" \; select-window -t "$target_window"
