@@ -1,0 +1,14 @@
+title: plug
+description: >
+  unleash efficiency!
+  a collection of simple bash scripts to accelerate day-to-day tasks or cli-based workflows
+
+author: Shantanu Mishra
+email: dev@8hantanu.net
+
+url: https://8hantanu.net
+baseurl: "/wiki/work/projects/plug"
+
+remote_theme: yree/mold
+footer_content: >
+  ##### © 2024 [8hantanu](https://8hantanu.net) | 📬 [comment](javascript:window.location='mailto:hey@8hantanu.net?subject='+encodeURIComponent(document.title)) | ⬅️ [previous](..)
