@@ -26,9 +26,9 @@ cmdr_cfg() {
 cmdr_all_cmds() {
     # add check if $CMDR_CMDS_PATH is a directory then awk in all the files in the directory
     if [ -d $CMDR_CMDS_PATH ]; then
-    awk '/```./{flag=1;next}/```/{flag=0}flag' $CMDR_CMDS_PATH/*
+    awk '/```.*#/{flag=1;next}/```/{flag=0}flag' $CMDR_CMDS_PATH/*
     else
-    awk '/```./{flag=1;next}/```/{flag=0}flag' $CMDR_CMDS_PATH
+    awk '/```.*#/{flag=1;next}/```/{flag=0}flag' $CMDR_CMDS_PATH
     fi
 }
 
