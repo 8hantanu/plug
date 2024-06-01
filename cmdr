@@ -26,7 +26,7 @@ cmdr_cfg() {
 
 cmdr_all_cmds() {
     if [ -d $CMDR_CMDS_PATH ]; then
-    awk '/```.*#/{flag=1;next}/```/{flag=0}flag' $CMDR_CMDS_PATH/*
+    find $CMDR_CMDS_PATH -type f -not -path "*/.*" -exec awk '/```.*#/{flag=1;next}/```/{flag=0}flag' {} \;
     else
     awk '/```.*#/{flag=1;next}/```/{flag=0}flag' $CMDR_CMDS_PATH
     fi
