@@ -12,6 +12,7 @@ help_msg() {
         -g, --grep    <regex>       grep for a particular command
         -x, --execute <regex>       execute a set of commands
         -a, --add     <regex>       add a set of commands to a file
+        -l, --last                  show last set of commands
         -h, --help                  display this help\
     "
 }
@@ -24,7 +25,6 @@ cmdr_cfg() {
 }
 
 cmdr_all_cmds() {
-    # add check if $CMDR_CMDS_PATH is a directory then awk in all the files in the directory
     if [ -d $CMDR_CMDS_PATH ]; then
     awk '/```.*#/{flag=1;next}/```/{flag=0}flag' $CMDR_CMDS_PATH/*
     else
@@ -56,7 +56,7 @@ cmdr_exec() {
     echo "$selected_cmds" >> $CMDR_EXEC_FILE
     chmod +x $CMDR_EXEC_FILE
     $CMDR_EXEC_FILE
-    rm $CMDR_EXEC_FILE
+    mv $CMDR_EXEC_FILE $CMDR_LAST_FILE
 }
 
 cmdr_add() {
@@ -64,6 +64,7 @@ cmdr_add() {
     selected_cmds=$(cmdr_select_cmds "$cmds")
     [ ! -n "$CMDR_TEMP_CMDS" ] && err "CMDR_TEMP_CMDS not set" && exit 1
     echo "$selected_cmds" > $CMDR_TEMP_CMDS
+    cp $CMDR_TEMP_CMDS $CMDR_LAST_FILE
 }
 
 cmdr_final_cmd() {
@@ -94,6 +95,14 @@ cmdr_select_cmds() {
     echo "echo \"done.\""
 }
 
+cmdr_last() {
+    while IFS= read -r line; do
+        if [[ ! $line =~ ^echo ]]; then
+            echo "$line"
+        fi
+    done < "$CMDR_LAST_FILE"
+}
+
 prereqs() {
     cmdr_cfg
     check_dir $CMDR_CMDS_PATH
@@ -105,6 +114,7 @@ options() {
         -g | --grep    ) cmdr_grep "$2";;
         -a | --add     ) cmdr_add "$2";;
         -x | --execute ) cmdr_exec "$2";;
+        -l | --last    ) cmdr_last;;
            *           ) help_msg;;
     esac
 }
