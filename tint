@@ -1,0 +1,47 @@
+#!/bin/bash
+
+# Tint: Tmux init: manage tmux sessions
+
+# Function to create tmux session and windows
+create_tmux_sessions() {
+    local session_name="$1"
+    local windows=("${@:2}")
+
+    # Create a new tmux session
+    tmux new-session -d -s "$session_name" -n "${windows[0]}"
+
+    # Loop through windows and create them in the session
+    for (( i=1; i<${#windows[@]}; i++ )); do
+        local window_name="${windows[i]}"
+        tmux new-window -t "$session_name" -n "$window_name"
+    done
+}
+
+# Main function
+main() {
+    local yaml_file="$1"
+
+    # Check if YAML file exists
+    if [ ! -f "$yaml_file" ]; then
+        echo "YAML file not found: $yaml_file"
+        exit 1
+    fi
+
+    # Parse YAML file and create tmux sessions
+    while IFS=: read -r session windows; do
+        # Convert windows string to array
+        IFS=',' read -r -a windows_array <<< "$windows"
+
+        # Create tmux session and windows
+        create_tmux_sessions "$session" "${windows_array[@]}"
+    done < "$yaml_file"
+}
+
+# Check for correct number of arguments
+if [ "$#" -ne 1 ]; then
+    echo "Usage: $0 <yaml_file>"
+    exit 1
+fi
+
+# Call main function with the YAML file argument
+main "$1"
