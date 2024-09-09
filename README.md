@@ -1,10 +1,10 @@
-# plug 🔌
+# plug
 
 **Unleash efficiency!**
 
 A collection of simple bash scripts to accelerate day-to-day tasks or CLI-based workflows.
 
-## Steps 🏗️
+## Steps 
 
 To get started with Plug, follow these simple steps:
 
@@ -20,11 +20,11 @@ To get started with Plug, follow these simple steps:
 3. ???
 4. Profit!
 
-## Includes 📦
+## Includes
 
-* 🚨 `cmdr` - Manage, search, and execute your commands
-* 🔮 `hexd` - Convert hexadecimal to decimal and back
-* 🧵 `knot` - Notify task completion for sequential multitasking
+* `cmdr` - Manage, search, and execute your commands
+* `hexd` - Convert hexadecimal to decimal and back
+* `knot` - Notify task completion for sequential multitasking
 
 ## Feedback 📝
 
