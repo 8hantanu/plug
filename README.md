@@ -26,10 +26,10 @@ To get started with Plug, follow these simple steps:
 * `hexd` - Convert hexadecimal to decimal and back
 * `knot` - Notify task completion for sequential multitasking
 
-## Feedback 📝
+## Feedback
 
 Any ideas, suggestions, or feedback regarding plug, please feel free to open an issue on the repository.
 
-## License 📜
+## License
 
 plug is open-source software licensed under the [MIT License](https://opensource.org/licenses/MIT). 
