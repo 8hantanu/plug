@@ -8,4 +8,6 @@ description: >
 url: https://8hantanu.net
 baseurl: /plug
 
+git_repo: 8hantanu/plug
+
 remote_theme: yree/mold
