@@ -25,6 +25,7 @@ To get started with Plug, follow these simple steps:
 * 🚨 `cmdr` - Manage, search, and execute your commands
 * 🔮 `hexd` - Convert hexadecimal to decimal and back
 * 🧵 `knot` - Notify task completion for sequential multitasking
+* 🐎 `rune` - Run every program as a script
 
 ## Feedback 📝
 

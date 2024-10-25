@@ -20,13 +20,19 @@ check_dir() {
     fi
 }
 
+check_bin() {
+    if ! which "$1" >/dev/null 2>&1; then
+        err "$1 not found"
+    fi
+}
+
 edit() {
     $EDITOR $1
 }
 
 init() {
     [ ! -n "$1" ] && help_msg && exit 0
-    prereqs
+    prereqs $@
     options $@
     exit 0
 }

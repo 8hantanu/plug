@@ -23,3 +23,6 @@ set_cfg DAYS_START_DATE "1997-08-31"
 set_cfg KNOT_DIR "/tmp"
 # sleep time in seconds
 set_cfg KNOT_TIME "1"
+
+# rune
+set_cfg RUNE_OUT "/tmp/rune.o"

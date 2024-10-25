@@ -1,0 +1,62 @@
+#!/bin/bash
+
+source $PLUG_PATH/cfgs
+
+help_msg() {
+    log "
+    rune: run everything 
+    desc: utility to run any program as a script
+          supported types: .c .cpp .py .rs
+    help: rune <file.type>
+    "
+}
+
+prereqs() {
+    rune_set_lang $1
+    check_bin $RUNE_EXEC
+}
+
+rune_compile() {
+    $RUNE_EXEC $1 -o $RUNE_OUT
+}
+
+rune_run() {
+    $RUNE_OUT
+}
+
+rune_cleanup() {
+    rm $RUNE_OUT
+}
+
+rune_set_lang() {
+    case "$1" in
+        *.rs    ) RUNE_EXEC="rustc" ;;
+        *.cpp   ) RUNE_EXEC="g++" ;;
+        *.c     ) RUNE_EXEC="gcc" ;;
+        *.py    ) RUNE_EXEC="python" 
+            rune_compile() {
+                :
+            }
+            rune_run() {
+                $RUNE_EXEC "$1"
+            }
+            rune_cleanup() {
+                :
+            }
+            ;;
+        *       ) err "unsupported type";;
+    esac
+}
+
+rune() {
+    rune_compile $@  || err "compilation failed"
+    rune_run $@      || err "run failed"
+    rune_cleanup     || err "post-run cleanup failed"
+    exit 0
+}
+
+options() {
+    rune $1
+}
+
+init $@
