@@ -4,6 +4,13 @@
 
 A collection of simple bash scripts to accelerate day-to-day tasks or CLI-based workflows.
 
+## Includes 📦
+
+* 🚨 `cmdr` - Manage, search, and execute your commands
+* 🔮 `hexd` - Convert hexadecimal to decimal and back
+* 🧵 `knot` - Notify task completion for sequential multitasking
+* 🐎 `rune` - Run every program as a script
+
 ## Steps 🏗️
 
 To get started with Plug, follow these simple steps:
@@ -19,13 +26,6 @@ To get started with Plug, follow these simple steps:
    ```
 3. ???
 4. Profit!
-
-## Includes 📦
-
-* 🚨 `cmdr` - Manage, search, and execute your commands
-* 🔮 `hexd` - Convert hexadecimal to decimal and back
-* 🧵 `knot` - Notify task completion for sequential multitasking
-* 🐎 `rune` - Run every program as a script
 
 ## Feedback 📝
 
