@@ -1,0 +1,16 @@
+#!/bin/bash
+
+source $PLUG_PATH/cfgs
+
+help_msg() {
+    log "
+    devl: the devl is in the details.
+    desc: a simple script to capture your dev logs
+    help: devl [args]
+    args:
+        -l, --log <message>          append a new log entry using the message
+        -v, --view <date/time>       display logs for the given date/time (or 'today', etc.)
+        -h, --help                   display this help
+    "
+}
+
